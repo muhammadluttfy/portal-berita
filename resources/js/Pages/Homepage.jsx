@@ -1,38 +1,27 @@
 import React from "react";
-import { Link, Head } from "@inertiajs/inertia-react";
+import { Head } from "@inertiajs/inertia-react";
+import Navbar from "@/Components/Navbar";
+import NewsLists from "@/Components/Homepage/NewsLists";
+import Footer from "@/Components/Footer";
+import Paginator from "@/Components/Homepage/Paginator";
 
 export default function Homepage(props) {
-    console.log(props);
+    // console.log("props:", props);
     return (
-        <div className="p-4 bg-slate-200">
+        <div className="bg-gray-100">
             <Head title={props.title} />
+            <Navbar />
+            <div className="flex flex-col items-center justify-center gap-6 mx-6 my-16 lg:flex-row lg:flex-wrap lg:items-stretch">
+                <NewsLists news={props.news.data} />
+            </div>
 
-            {props.news ? (
-                props.news.map((data, i) => {
-                    return (
-                        <div
-                            key={i}
-                            className="p-4 m-4 bg-slate-100 shadow-lg rounded-lg"
-                        >
-                            <p className="text-2xl text-slate-800">
-                                <strong>Title</strong> : {data.title}
-                            </p>
-                            <p className="text-xl text-slate-700">
-                                <strong>Description</strong> :{" "}
-                                {data.description}
-                            </p>
-                            <p>
-                                <strong>Cateogry</strong> : {data.category}
-                            </p>
-                            <p>
-                                <strong>Author</strong> : {data.author}
-                            </p>
-                        </div>
-                    );
-                })
-            ) : (
-                <p>Saat ini belum ada berita!</p>
-            )}
+            <div className="flex items-center justify-center my-16">
+                <Paginator meta={props.news.meta} />
+            </div>
+
+            <div className="">
+                <Footer />
+            </div>
         </div>
     );
 }

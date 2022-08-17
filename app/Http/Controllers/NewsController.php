@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\NewsCollection;
 
 class NewsController extends Controller
 {
@@ -15,10 +17,12 @@ class NewsController extends Controller
      */
     public function index()
     {
+        $news = new NewsCollection(News::paginate(9));
+        // dd($news);
         return Inertia::render('Homepage', [
-            'title' => 'Cuy News Homepage',
+            'title' => 'Homepage',
             'description' => 'Selamat datang di Portal Berita Cuy News',
-            'news' => News::all(),
+            'news' => $news,
         ]);
     }
 
