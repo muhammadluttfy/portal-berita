@@ -6,11 +6,11 @@ import Footer from "@/Components/Footer";
 import Paginator from "@/Components/Homepage/Paginator";
 
 export default function Homepage(props) {
-    // console.log("props:", props);
+    // console.log("data di props nih bro:", props);
     return (
         <div className="bg-gray-100">
             <Head title={props.title} />
-            <Navbar />
+            <Navbar user={props.auth.user} />
             <div className="flex flex-col items-center justify-center gap-6 mx-6 my-16 lg:flex-row lg:flex-wrap lg:items-stretch">
                 <NewsLists news={props.news.data} />
             </div>

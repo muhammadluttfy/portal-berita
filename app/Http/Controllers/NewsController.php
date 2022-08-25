@@ -17,7 +17,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $news = new NewsCollection(News::paginate(9));
+        $news = new NewsCollection(News::orderByDesc('id')->paginate(9));
         // dd($news);
         return Inertia::render('Homepage', [
             'title' => 'Homepage',
@@ -44,7 +44,20 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required|max:255',
+            'category' => 'required|max:255'
+        ]);
+
+
+        $news = new News();
+        $news->title = $request->title;
+        $news->description = $request->description;
+        $news->category = $request->category;
+        $news->author = auth()->user()->email;
+        $news->save();
+        return redirect()->back()->with('message', "Berita berhasil ditambahkan");
     }
 
     /**
@@ -55,7 +68,10 @@ class NewsController extends Controller
      */
     public function show(News $news)
     {
-        //
+        $myNews = $news::where('author', auth()->user()->email)->orderByDesc('id')->get();
+        return Inertia::render('Dashboard', [
+            'myNews' => $myNews,
+        ]);
     }
 
     /**
@@ -64,9 +80,11 @@ class NewsController extends Controller
      * @param  \App\Models\News  $news
      * @return \Illuminate\Http\Response
      */
-    public function edit(News $news)
+    public function edit(News $news, Request $request)
     {
-        //
+        return Inertia::render('EditNews', [
+            'news' => $news->find($request->id),
+        ]);
     }
 
     /**
@@ -78,7 +96,14 @@ class NewsController extends Controller
      */
     public function update(Request $request, News $news)
     {
-        //
+        // dd($request->all());
+        News::where('id', $request->id)->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'category' => $request->category
+        ]);
+
+        return to_route('dashboard')->with('message', "Berita berhasil diupdateS");
     }
 
     /**
@@ -87,8 +112,9 @@ class NewsController extends Controller
      * @param  \App\Models\News  $news
      * @return \Illuminate\Http\Response
      */
-    public function destroy(News $news)
+    public function destroy(Request $request)
     {
-        //
+        News::find($request->id)->delete();
+        return redirect()->back()->with('message', "Berita berhasil dihapus");
     }
 }
